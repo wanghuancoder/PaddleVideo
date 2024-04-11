@@ -38,7 +38,7 @@ def drop_path(x, drop_prob=0., training=False):
     if drop_prob == 0. or not training:
         return x
     keep_prob = paddle.to_tensor(1 - drop_prob)
-    shape = (paddle.shape(x)[0], ) + (1, ) * (x.ndim - 1)
+    shape = (x.shape[0], ) + (1, ) * (x.ndim - 1)
     random_tensor = keep_prob + paddle.rand(shape, dtype=x.dtype)
     random_tensor = paddle.floor(random_tensor)  # binarize
     output = x.divide(keep_prob) * random_tensor
@@ -317,7 +317,7 @@ class SwinTransformerBlock3D(nn.Layer):
                        drop=drop)
 
     def forward_part1(self, x, mask_matrix):
-        B = paddle.shape(x)[0]
+        B = x.shape[0]
         _, D, H, W, C = x.shape
         window_size, shift_size = get_window_size((D, H, W), self.window_size,
                                                   self.shift_size)
@@ -513,7 +513,7 @@ class BasicLayer(nn.Layer):
             x: Input feature, tensor size (B, C, D, H, W).
         """
         # calculate attention mask for SW-MSA
-        B = paddle.shape(x)[0]
+        B = x.shape[0]
         _, C, D, H, W = x.shape
         window_size, shift_size = get_window_size((D, H, W), self.window_size,
                                                   self.shift_size)

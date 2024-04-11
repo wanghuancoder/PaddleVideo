@@ -43,7 +43,7 @@ def drop_path(x, drop_prob=0., training=False):
     if drop_prob == 0. or not training:
         return x
     keep_prob = paddle.to_tensor(1 - drop_prob)
-    shape = (paddle.shape(x)[0], ) + (1, ) * (x.ndim - 1)
+    shape = (x.shape[0], ) + (1, ) * (x.ndim - 1)
     random_tensor = keep_prob + paddle.rand(shape).astype(x.dtype)
     random_tensor = paddle.floor(random_tensor)  # binarize
     output = x.divide(keep_prob) * random_tensor
@@ -374,7 +374,7 @@ class TokenShiftVisionTransformer(nn.Layer):
 
     def forward_features(self, x):
         # B = x.shape[0]
-        B = paddle.shape(x)[0]
+        B = x.shape[0]
         x, T, W = self.patch_embed(x)  # [BT,nH*nW,F]
         cls_tokens = self.cls_token.expand((B * T, -1, -1))  # [1,1,F]->[BT,1,F]
         x = paddle.concat((cls_tokens, x), axis=1)
