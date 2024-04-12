@@ -49,7 +49,7 @@ class BMNLoss(BaseWeightedLoss):
             gt_label = paddle.reshape(x=gt_label, shape=[-1])
             gt_label.stop_gradient = True
             pmask = paddle.cast(x=(gt_label > 0.5), dtype=datatype)
-            num_entries = paddle.cast(pmask.shape, dtype=datatype)
+            num_entries = paddle.cast(paddle.shape(pmask), dtype=datatype)
             num_positive = paddle.cast(paddle.sum(pmask), dtype=datatype)
             ratio = num_entries / num_positive
             coef_0 = 0.5 * ratio / (ratio - 1)
